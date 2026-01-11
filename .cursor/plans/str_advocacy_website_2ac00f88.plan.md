@@ -1,6 +1,6 @@
 ---
 name: STR Advocacy Website
-overview: Build a full-featured political advocacy website for the Charlottesville STR Alliance using Next.js, Sanity CMS, Supabase, and Resend. The site will serve as an organizing tool with email signups, evidence library, action center, and an optional petition feature (disabled by default).
+overview: Build a full-featured political advocacy website for the Charlottesville Host Alliance using Next.js, Sanity CMS, Supabase, and Resend. The site will serve as an organizing tool with email signups, evidence library, action center, and an optional petition feature (disabled by default).
 todos:
   - id: phase1-deps
     content: Install remaining dependencies (Supabase client, Resend, Turnstile, Vercel Analytics)
@@ -40,7 +40,7 @@ todos:
     status: pending
 ---
 
-# Charlottesville STR Alliance - Political Advocacy Website
+# Charlottesville Host Alliance - Political Advocacy Website
 
 ## Architecture Overview
 
@@ -395,7 +395,7 @@ Server Actions to generate CSV downloads of supporters and petition signatures.
 
 Create `scripts/seed-sanity.ts` that imports initial content:
 
-- Site settings with org name "Charlottesville STR Alliance"
+- Site settings with org name "Charlottesville Host Alliance"
 - Placeholder pages (About, Platform, FAQ)
 - 3-5 sample evidence items
 - 2-3 sample action alerts
