@@ -10,9 +10,6 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
-import { Turnstile } from "@marsidev/react-turnstile";
-
-const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 type PetitionFormProps = {
   initialCount: number;
@@ -42,7 +39,6 @@ export function PetitionForm({ initialCount, initialName = "", initialEmail = ""
   const [locality, setLocality] = useState("");
   const [isHost, setIsHost] = useState(false);
   const [consentGiven, setConsentGiven] = useState(false);
-  const [turnstileToken, setTurnstileToken] = useState("");
   const [count, setCount] = useState(initialCount);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -91,8 +87,6 @@ export function PetitionForm({ initialCount, initialName = "", initialEmail = ""
     }
   }, [shouldPulsate]);
 
-  const hasTurnstile = Boolean(siteKey);
-
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
@@ -104,18 +98,12 @@ export function PetitionForm({ initialCount, initialName = "", initialEmail = ""
         return;
       }
 
-      if (!turnstileToken && hasTurnstile) {
-        setError("Please complete the verification.");
-        return;
-      }
-
       const result = await submitPetition({
         name,
         email,
         locality,
         isHost,
         consentGiven,
-        turnstileToken: turnstileToken || "",
       });
 
       if (!result.ok) {
@@ -200,14 +188,6 @@ export function PetitionForm({ initialCount, initialName = "", initialEmail = ""
             I consent to the Charlottesville Host Alliance storing my information for this petition.
           </Label>
         </div>
-
-        {hasTurnstile && (
-          <Turnstile
-            siteKey={siteKey!}
-            options={{ size: "invisible" }}
-            onSuccess={(token) => setTurnstileToken(token)}
-          />
-        )}
 
         {error && <p className="text-sm text-destructive">{error}</p>}
         {message && <p className="text-sm text-emerald-600">{message}</p>}

@@ -1,7 +1,6 @@
 'use server'
 
 import { getSupabaseServerClient } from '@/lib/supabase/server'
-import { verifyTurnstileToken } from '@/lib/turnstile'
 import { sendWelcomeEmail } from '@/lib/resend'
 
 type ActionResult = {
@@ -11,23 +10,12 @@ type ActionResult = {
 
 export async function subscribeEmail(input: {
   email: string
-  turnstileToken: string
   source?: string
 }): Promise<ActionResult> {
   const email = input.email?.trim().toLowerCase()
 
   if (!email) {
     return { ok: false, error: 'Email is required' }
-  }
-
-  try {
-    const verification = await verifyTurnstileToken(input.turnstileToken)
-
-    if (!verification.success) {
-      return { ok: false, error: 'Turnstile verification failed' }
-    }
-  } catch {
-    return { ok: false, error: 'Turnstile verification failed' }
   }
 
   const supabase = await getSupabaseServerClient()

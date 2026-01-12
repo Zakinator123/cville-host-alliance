@@ -212,7 +212,7 @@ export default async function HomePage() {
 
             </div>
             <ol className="space-y-4">
-              {upcomingSteps.map((item) => (
+              {upcomingSteps.map((item: { title: string; subtitle: string; description: string; status: string }) => (
                 <li key={item.subtitle} className="relative">
                   <span className="absolute -left-[30px] top-1.5 h-3 w-3 rounded-full bg-primary/40" />
                   <div className="space-y-1">
@@ -296,7 +296,7 @@ export default async function HomePage() {
                 </p>
                 {item.stats && item.stats.length > 0 && (
                   <div className="space-y-1.5 rounded-lg bg-accent-teal/5 p-3">
-                    {item.stats.slice(0, 3).map((stat) => (
+                    {item.stats.slice(0, 3).map((stat: { _key?: string; label?: string; value?: string }) => (
                       <div key={stat._key} className="flex items-baseline justify-between gap-2">
                         <span className="text-xs text-muted-foreground">{stat.label}</span>
                         <span className="text-sm font-semibold text-foreground">{stat.value}</span>

@@ -23,7 +23,7 @@ export default async function NewsPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        {(posts ?? []).map((post) => (
+        {(posts ?? []).map((post: { _id: string; title: string; slug: string; excerpt?: string; publishedAt?: string }) => (
           <Card key={post._id}>
             <CardHeader>
               <CardTitle>{post.title}</CardTitle>

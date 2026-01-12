@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/accordion";
 import { getPageBySlug, getFAQs } from "@/lib/sanity/queries";
 import { notFound } from "next/navigation";
+import type { PortableTextBlock } from "@portabletext/react";
 
 export default async function AboutPage() {
   const [page, faqs] = await Promise.all([
@@ -41,7 +42,7 @@ export default async function AboutPage() {
             </p>
           </div>
           <Accordion type="multiple" className="w-full">
-            {faqs.map((item) => (
+            {faqs.map((item: { _id: string; question: string; answer?: PortableTextBlock[] }) => (
               <AccordionItem value={item._id} key={item._id}>
                 <AccordionTrigger className="text-left">{item.question}</AccordionTrigger>
                 <AccordionContent>

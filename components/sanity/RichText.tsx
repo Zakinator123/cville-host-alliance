@@ -1,28 +1,22 @@
-import { PortableText, type PortableTextBlock } from "@portabletext/react";
+import { PortableText, type PortableTextBlock, type PortableTextComponents } from "@portabletext/react";
 
-const components = {
+const components: Partial<PortableTextComponents> = {
   list: {
-    bullet: ({ children }: { children: React.ReactNode }) => (
+    bullet: ({ children }) => (
       <ul className="ml-6 list-disc space-y-2">{children}</ul>
     ),
-    number: ({ children }: { children: React.ReactNode }) => (
+    number: ({ children }) => (
       <ol className="ml-6 list-decimal space-y-2">{children}</ol>
     ),
   },
   marks: {
-    strong: ({ children }: { children: React.ReactNode }) => (
+    strong: ({ children }) => (
       <strong className="font-semibold">{children}</strong>
     ),
-    em: ({ children }: { children: React.ReactNode }) => (
+    em: ({ children }) => (
       <em className="italic text-foreground/80">{children}</em>
     ),
-    link: ({
-      children,
-      value,
-    }: {
-      children: React.ReactNode;
-      value?: { href?: string };
-    }) => (
+    link: ({ children, value }) => (
       <a
         href={value?.href}
         className="text-primary underline-offset-4 hover:underline"
@@ -34,16 +28,16 @@ const components = {
     ),
   },
   block: {
-    normal: ({ children }: { children: React.ReactNode }) => (
+    normal: ({ children }) => (
       <p className="text-base leading-7 text-muted-foreground">{children}</p>
     ),
-    h2: ({ children }: { children: React.ReactNode }) => (
+    h2: ({ children }) => (
       <h2 className="text-2xl font-semibold leading-tight">{children}</h2>
     ),
-    h3: ({ children }: { children: React.ReactNode }) => (
+    h3: ({ children }) => (
       <h3 className="text-xl font-semibold leading-tight">{children}</h3>
     ),
-    blockquote: ({ children }: { children: React.ReactNode }) => (
+    blockquote: ({ children }) => (
       <blockquote className="border-l-4 border-primary/50 pl-4 text-lg font-medium text-foreground">
         {children}
       </blockquote>

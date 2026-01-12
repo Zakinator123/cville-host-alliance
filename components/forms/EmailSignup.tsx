@@ -7,11 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Turnstile } from "@marsidev/react-turnstile";
 
 type Stage = "step1" | "step2" | "done";
-
-const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 type EmailSignupProps = {
   onSignupComplete?: (email: string, name: string) => void;
@@ -21,26 +18,17 @@ export function EmailSignup({ onSignupComplete }: EmailSignupProps) {
   const [stage, setStage] = useState<Stage>("step1");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
-  const [turnstileToken, setTurnstileToken] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const [confirmationMessage, setConfirmationMessage] = useState<string | null>(null);
-
-  const hasTurnstile = Boolean(siteKey);
 
   const onSubmitStep1 = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
 
     startTransition(async () => {
-      if (!turnstileToken && hasTurnstile) {
-        setError("Please complete the verification.");
-        return;
-      }
-
       const result = await subscribeEmail({
         email,
-        turnstileToken: turnstileToken || "",
       });
 
       if (!result.ok) {
@@ -166,14 +154,6 @@ export function EmailSignup({ onSignupComplete }: EmailSignupProps) {
               aria-invalid={Boolean(error)}
             />
           </div>
-
-          {hasTurnstile && (
-            <Turnstile
-              siteKey={siteKey!}
-              options={{ size: "invisible" }}
-              onSuccess={(token) => setTurnstileToken(token)}
-            />
-          )}
 
           {error && <p className="text-sm text-destructive">{error}</p>}
 

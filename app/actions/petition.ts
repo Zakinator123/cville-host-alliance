@@ -1,7 +1,6 @@
 'use server'
 
 import { getSupabaseServerClient } from '@/lib/supabase/server'
-import { verifyTurnstileToken } from '@/lib/turnstile'
 import { sendPetitionConfirmation } from '@/lib/resend'
 
 type ActionResult = {
@@ -15,7 +14,6 @@ export async function submitPetition(input: {
   locality?: string
   isHost?: boolean
   consentGiven: boolean
-  turnstileToken: string
 }): Promise<ActionResult> {
   if (!input.consentGiven) {
     return { ok: false, error: 'Consent is required' }
@@ -30,15 +28,6 @@ export async function submitPetition(input: {
 
   if (!email) {
     return { ok: false, error: 'Email is required' }
-  }
-
-  try {
-    const verification = await verifyTurnstileToken(input.turnstileToken)
-    if (!verification.success) {
-      return { ok: false, error: 'Turnstile verification failed' }
-    }
-  } catch {
-    return { ok: false, error: 'Turnstile verification failed' }
   }
 
   const supabase = await getSupabaseServerClient()

@@ -16,7 +16,7 @@ const client = createClient({
   token,
 })
 
-type SeedDoc = Record<string, unknown> & { _id: string }
+type SeedDoc = Record<string, unknown> & { _id: string; _type: string }
 
 // Helper to generate random keys for blocks
 const randomKey = () => Math.random().toString(36).substring(2, 11)
