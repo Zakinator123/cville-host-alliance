@@ -12,7 +12,6 @@ type ActionResult = {
 export async function submitPetition(input: {
   name: string
   email: string
-  zip?: string
   locality?: string
   isHost?: boolean
   consentGiven: boolean
@@ -46,7 +45,6 @@ export async function submitPetition(input: {
   const { error } = await supabase.from('petition_signatures').insert({
     name,
     email,
-    zip: input.zip,
     locality: input.locality,
     is_host: input.isHost ?? false,
     consent_given: input.consentGiven,

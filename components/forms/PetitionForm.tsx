@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect, useRef } from "react";
 
 import { submitPetition } from "@/app/actions/petition";
 import { Button } from "@/components/ui/button";
@@ -9,18 +9,36 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
 import { Turnstile } from "@marsidev/react-turnstile";
 
 const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 type PetitionFormProps = {
   initialCount: number;
+  initialName?: string;
+  initialEmail?: string;
+  shouldPulsate?: boolean;
 };
 
-export function PetitionForm({ initialCount }: PetitionFormProps) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [zip, setZip] = useState("");
+export function PetitionForm({ initialCount, initialName = "", initialEmail = "", shouldPulsate = false }: PetitionFormProps) {
+  // Get email/name from sessionStorage if available (from email signup)
+  const getStoredEmail = () => {
+    if (typeof window !== "undefined") {
+      return sessionStorage.getItem("petition_email") || initialEmail;
+    }
+    return initialEmail;
+  };
+  
+  const getStoredName = () => {
+    if (typeof window !== "undefined") {
+      return sessionStorage.getItem("petition_name") || initialName;
+    }
+    return initialName;
+  };
+
+  const [name, setName] = useState(getStoredName());
+  const [email, setEmail] = useState(getStoredEmail());
   const [locality, setLocality] = useState("");
   const [isHost, setIsHost] = useState(false);
   const [consentGiven, setConsentGiven] = useState(false);
@@ -29,6 +47,49 @@ export function PetitionForm({ initialCount }: PetitionFormProps) {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const formRef = useRef<HTMLDivElement>(null);
+
+  // Update form fields when sessionStorage changes (from email signup)
+  useEffect(() => {
+    const handleStorageUpdate = () => {
+      const storedEmail = sessionStorage.getItem("petition_email");
+      const storedName = sessionStorage.getItem("petition_name");
+      if (storedEmail) {
+        setEmail(storedEmail);
+      }
+      if (storedName) {
+        setName(storedName);
+      }
+    };
+
+    // Listen for custom event from email signup
+    window.addEventListener("petitionDataUpdated", handleStorageUpdate);
+    
+    // Check sessionStorage on mount (prioritize over initial props for autopopulation)
+    handleStorageUpdate();
+    
+    // Only use initial props if sessionStorage doesn't have values
+    if (!sessionStorage.getItem("petition_email") && initialEmail) {
+      setEmail(initialEmail);
+    }
+    if (!sessionStorage.getItem("petition_name") && initialName) {
+      setName(initialName);
+    }
+
+    return () => {
+      window.removeEventListener("petitionDataUpdated", handleStorageUpdate);
+    };
+  }, [initialName, initialEmail]);
+
+  useEffect(() => {
+    if (shouldPulsate && formRef.current) {
+      formRef.current.classList.add("email-signup-glow");
+      const timer = setTimeout(() => {
+        formRef.current?.classList.remove("email-signup-glow");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [shouldPulsate]);
 
   const hasTurnstile = Boolean(siteKey);
 
@@ -51,7 +112,6 @@ export function PetitionForm({ initialCount }: PetitionFormProps) {
       const result = await submitPetition({
         name,
         email,
-        zip,
         locality,
         isHost,
         consentGiven,
@@ -67,7 +127,6 @@ export function PetitionForm({ initialCount }: PetitionFormProps) {
       setCount((prev) => prev + 1);
       setName("");
       setEmail("");
-      setZip("");
       setLocality("");
       setIsHost(false);
       setConsentGiven(false);
@@ -75,13 +134,13 @@ export function PetitionForm({ initialCount }: PetitionFormProps) {
   };
 
   return (
-    <div className="rounded-2xl border bg-card p-6 shadow-sm">
+    <div ref={formRef} id="petition-form" className="rounded-2xl border bg-card p-6 shadow-sm">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-primary">Add your name</p>
-          <h3 className="text-xl font-semibold">Petition to protect STRs</h3>
+          <h3 className="text-xl font-semibold">Demand a pause for open feedback</h3>
           <p className="text-sm text-muted-foreground">
-            {count.toLocaleString()} supporters have signed.
+            Join {count.toLocaleString()} {count === 1 ? 'supporter' : 'supporters'} asking the City to pause STR regulations and allow for open, inclusive input on both the current regulations and proposed new regulations.
           </p>
         </div>
       </div>
@@ -108,40 +167,28 @@ export function PetitionForm({ initialCount }: PetitionFormProps) {
             onChange={(event) => setEmail(event.target.value)}
           />
         </div>
-        <div className="grid gap-4 sm:grid-cols-3">
-          <div className="space-y-2 sm:col-span-2">
-            <Label htmlFor="locality">Locality</Label>
-            <Select value={locality} onValueChange={setLocality}>
-              <SelectTrigger id="locality">
-                <SelectValue placeholder="Select a locality" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Charlottesville">Charlottesville</SelectItem>
-                <SelectItem value="Albemarle">Albemarle</SelectItem>
-                <SelectItem value="Other">Other</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="zip">ZIP</Label>
-            <Input
-              id="zip"
-              name="zip"
-              value={zip}
-              onChange={(event) => setZip(event.target.value)}
-              inputMode="numeric"
-            />
-          </div>
+        <div className="space-y-2">
+          <Label htmlFor="locality">Locality</Label>
+          <Select value={locality} onValueChange={setLocality}>
+            <SelectTrigger id="locality">
+              <SelectValue placeholder="Select a locality" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Charlottesville">Charlottesville</SelectItem>
+              <SelectItem value="Albemarle">Albemarle</SelectItem>
+              <SelectItem value="Other">Other</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-        <div className="flex items-center gap-2">
-          <Checkbox
-            id="isHost"
-            checked={isHost}
-            onCheckedChange={(checked) => setIsHost(Boolean(checked))}
-          />
-          <Label htmlFor="isHost" className="text-sm text-muted-foreground">
+        <div className="flex items-center justify-between gap-2">
+          <Label htmlFor="isHost" className="text-sm text-muted-foreground cursor-pointer">
             I am a short-term rental host
           </Label>
+          <Switch
+            id="isHost"
+            checked={isHost}
+            onCheckedChange={setIsHost}
+          />
         </div>
         <div className="flex items-start gap-2">
           <Checkbox

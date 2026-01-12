@@ -5,13 +5,41 @@ import { cn } from "@/lib/utils"
 function Card({
   className,
   size = "default",
+  variant = "default",
+  style,
   ...props
-}: React.ComponentProps<"div"> & { size?: "default" | "sm" }) {
+}: React.ComponentProps<"div"> & {
+  size?: "default" | "sm"
+  variant?:
+    | "default"
+    | "accent-teal"
+    | "accent-coral"
+    | "elevated"
+    | "tinted"
+}) {
+  const variantClassMap: Record<string, string> = {
+    default: "",
+    "accent-teal": "card-surface shadow-elevated ring-1 ring-primary/10",
+    "accent-coral": "card-surface shadow-elevated ring-1 ring-[color:color-mix(in_oklab,var(--accent-coral)_45%,var(--border))]",
+    elevated: "card-surface shadow-elevated ring-1 ring-border/60",
+    tinted: "card-surface ring-1 ring-border/60",
+  }
+
+  const variantStyleMap: Record<string, React.CSSProperties | undefined> = {
+    default: undefined,
+    "accent-teal": undefined,
+    "accent-coral": undefined,
+    elevated: undefined,
+    tinted: undefined,
+  }
+
   return (
     <div
       data-slot="card"
       data-size={size}
-      className={cn("ring-foreground/10 bg-card text-card-foreground gap-6 overflow-hidden rounded-2xl py-6 text-sm ring-1 has-[>img:first-child]:pt-0 data-[size=sm]:gap-4 data-[size=sm]:py-4 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl group/card flex flex-col", className)}
+      data-variant={variant}
+      className={cn("ring-foreground/10 bg-card text-card-foreground gap-6 overflow-hidden rounded-2xl py-6 text-sm ring-1 has-[>img:first-child]:pt-0 data-[size=sm]:gap-4 data-[size=sm]:py-4 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl group/card flex flex-col", className, variantClassMap[variant])}
+      style={{ ...variantStyleMap[variant], ...style }}
       {...props}
     />
   )

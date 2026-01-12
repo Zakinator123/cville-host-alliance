@@ -65,7 +65,7 @@ export async function updateSupporterInfo(input: {
   }
 
   const supabase = await getSupabaseServerClient()
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('supporters')
     .update({
       name: input.name,
@@ -73,10 +73,14 @@ export async function updateSupporterInfo(input: {
       zip: input.zip,
     })
     .eq('email', email)
+    .select()
 
   if (error) {
+    console.error('Update error:', error)
     return { ok: false, error: 'Unable to update your info right now' }
   }
+
+  console.log('Update result:', data)
 
   return { ok: true }
 }

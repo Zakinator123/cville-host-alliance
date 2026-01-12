@@ -22,6 +22,24 @@ begin
   end if;
 end$$;
 
+do $$
+begin
+  if not exists (
+    select 1 from pg_policies where schemaname = 'public' and tablename = 'supporters' and policyname = 'Allow anonymous select'
+  ) then
+    create policy "Allow anonymous select" on public.supporters for select using (true);
+  end if;
+end$$;
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_policies where schemaname = 'public' and tablename = 'supporters' and policyname = 'Allow anonymous update'
+  ) then
+    create policy "Allow anonymous update" on public.supporters for update using (true) with check (true);
+  end if;
+end$$;
+
 -- Petition signatures table
 create table if not exists public.petition_signatures (
   id uuid primary key default gen_random_uuid(),
@@ -47,4 +65,11 @@ begin
   end if;
 end$$;
 
--- Without select/update/delete policies, only the service role (which bypasses RLS) can read or modify rows.
+do $$
+begin
+  if not exists (
+    select 1 from pg_policies where schemaname = 'public' and tablename = 'petition_signatures' and policyname = 'Allow anonymous select'
+  ) then
+    create policy "Allow anonymous select" on public.petition_signatures for select using (true);
+  end if;
+end$$;

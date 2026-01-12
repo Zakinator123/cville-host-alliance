@@ -6,7 +6,6 @@ import { subscribeEmail, updateSupporterInfo } from "@/app/actions/subscribe";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Turnstile } from "@marsidev/react-turnstile";
 
@@ -14,14 +13,18 @@ type Stage = "step1" | "step2" | "done";
 
 const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
-export function EmailSignup() {
+type EmailSignupProps = {
+  onSignupComplete?: (email: string, name: string) => void;
+};
+
+export function EmailSignup({ onSignupComplete }: EmailSignupProps) {
   const [stage, setStage] = useState<Stage>("step1");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
-  const [locality, setLocality] = useState("");
   const [turnstileToken, setTurnstileToken] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const [confirmationMessage, setConfirmationMessage] = useState<string | null>(null);
 
   const hasTurnstile = Boolean(siteKey);
 
@@ -45,6 +48,13 @@ export function EmailSignup() {
         return;
       }
 
+      // Store email in sessionStorage for petition autopopulation
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("petition_email", email);
+        // Dispatch custom event to notify petition form
+        window.dispatchEvent(new CustomEvent("petitionDataUpdated"));
+      }
+      setConfirmationMessage("Thanks! You're signed up for updates.");
       setStage("step2");
     });
   };
@@ -62,7 +72,6 @@ export function EmailSignup() {
       const result = await updateSupporterInfo({
         email,
         name,
-        locality,
       });
 
       if (!result.ok) {
@@ -70,35 +79,79 @@ export function EmailSignup() {
         return;
       }
 
-      setStage("done");
+      // Store email/name in sessionStorage for petition autopopulation
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("petition_email", email);
+        if (name) {
+          sessionStorage.setItem("petition_name", name);
+        }
+        // Dispatch custom event to notify petition form
+        window.dispatchEvent(new CustomEvent("petitionDataUpdated"));
+      }
+      setConfirmationMessage("Name saved! Thanks for joining.");
+      setTimeout(() => {
+        setConfirmationMessage(null);
+        setStage("done");
+        onSignupComplete?.(email, name);
+      }, 2000);
     });
+  };
+
+  const scrollToPetition = () => {
+    // Try to find petition form in ActionAlertCard first
+    const petitionForm = document.getElementById("petition-form");
+    if (petitionForm) {
+      petitionForm.scrollIntoView({ behavior: "smooth", block: "center" });
+      // Trigger pulsate effect
+      petitionForm.classList.add("email-signup-glow");
+      setTimeout(() => {
+        petitionForm.classList.remove("email-signup-glow");
+      }, 3000);
+    } else {
+      // Fallback: scroll to take-action section
+      const takeAction = document.getElementById("take-action");
+      if (takeAction) {
+        takeAction.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
   };
 
   if (stage === "done") {
     return (
-      <div className="rounded-2xl border bg-muted/40 p-6">
-        <h3 className="text-lg font-semibold">Thank you for joining!</h3>
-        <p className="text-muted-foreground">
-          You’re on the list. We’ll keep you posted on key hearings and action alerts.
+      <div className="rounded-3xl border border-primary/15 bg-section-tint p-6 shadow-elevated">
+        <h3 className="text-xl font-semibold text-foreground">Thank you for joining!</h3>
+        <p className="text-muted-foreground mb-4">
+          You're on the list. We'll keep you posted on key hearings and action alerts.
         </p>
+        <Button onClick={scrollToPetition} className="w-full">
+          Sign the petition too
+        </Button>
       </div>
     );
   }
 
   return (
-    <div className="rounded-2xl border bg-card p-6 shadow-sm" id="email-signup">
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium text-primary">Stay informed</p>
-          <h3 className="text-xl font-semibold">Join the movement</h3>
+    <div
+      className="rounded-3xl border border-primary/15 bg-card card-surface shadow-elevated"
+      id="email-signup"
+    >
+      <div className="mb-4 flex items-center justify-between gap-3 px-6 pt-6">
+        <div className="space-y-1">
+          <h3 className="text-xl font-semibold">Get updates</h3>
           <p className="text-sm text-muted-foreground">
             Get updates on hearings, votes, and ways to help.
           </p>
         </div>
       </div>
 
+      {confirmationMessage && (
+        <div className="px-6 pb-4">
+          <p className="text-sm text-emerald-600 font-medium">{confirmationMessage}</p>
+        </div>
+      )}
+
       {stage === "step1" ? (
-        <form className="space-y-4" onSubmit={onSubmitStep1}>
+        <form className="space-y-4 px-6 pb-6" onSubmit={onSubmitStep1}>
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -125,8 +178,8 @@ export function EmailSignup() {
           {error && <p className="text-sm text-destructive">{error}</p>}
 
           <div className="flex items-center gap-2">
-            <Button type="submit" disabled={pending}>
-              {pending ? "Submitting..." : "Join the movement"}
+            <Button type="submit" disabled={pending} className="shadow-elevated">
+              {pending ? "Submitting..." : "Stay informed"}
             </Button>
             <p className="text-xs text-muted-foreground">
               We respect your inbox. Unsubscribe anytime.
@@ -136,9 +189,9 @@ export function EmailSignup() {
       ) : (
         <>
           <Separator />
-          <form className="space-y-4 pt-4" onSubmit={onSubmitStep2}>
+          <form className="space-y-4 px-6 pb-6 pt-4" onSubmit={onSubmitStep2}>
             <p className="text-sm text-muted-foreground">
-              Optional: add a name and locality to help us organize locally.
+              Optional: add your name to help us organize locally.
             </p>
             <div className="space-y-2">
               <Label htmlFor="name">Name (optional)</Label>
@@ -150,28 +203,27 @@ export function EmailSignup() {
                 onChange={(event) => setName(event.target.value)}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="locality">Locality (optional)</Label>
-              <Select value={locality} onValueChange={setLocality}>
-                <SelectTrigger id="locality">
-                  <SelectValue placeholder="Choose a locality" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Charlottesville">Charlottesville</SelectItem>
-                  <SelectItem value="Albemarle">Albemarle</SelectItem>
-                  <SelectItem value="Other">Other</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
             {error && <p className="text-sm text-destructive">{error}</p>}
             <div className="flex items-center gap-2">
-              <Button type="submit" disabled={pending}>
+              <Button type="submit" disabled={pending} className="shadow-elevated">
                 {pending ? "Saving..." : "Save"}
               </Button>
               <Button
                 type="button"
                 variant="ghost"
-                onClick={() => setStage("done")}
+                onClick={() => {
+                  // Store email in sessionStorage for petition autopopulation
+                  if (typeof window !== "undefined") {
+                    sessionStorage.setItem("petition_email", email);
+                    if (name) {
+                      sessionStorage.setItem("petition_name", name);
+                    }
+                    // Dispatch custom event to notify petition form
+                    window.dispatchEvent(new CustomEvent("petitionDataUpdated"));
+                  }
+                  setStage("done");
+                  onSignupComplete?.(email, name);
+                }}
                 disabled={pending}
               >
                 Skip

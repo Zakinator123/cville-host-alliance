@@ -1,13 +1,32 @@
-export default function AdminHomePage() {
+import { redirect } from 'next/navigation'
+import { checkAdminAuth, getSupporters, getPetitionSignatures } from '@/app/actions/export'
+import { flags } from '@/lib/flags'
+import { AdminDashboard } from '@/components/admin/AdminDashboard'
+
+export default async function AdminPage() {
+  await checkAdminAuth()
+
+  const [supporters, petitionSignatures] = await Promise.all([
+    getSupporters(),
+    flags.petitionEnabled ? getPetitionSignatures() : Promise.resolve([]),
+  ])
+
   return (
-    <div className="mx-auto max-w-4xl space-y-4 px-4 py-10">
-      <h1 className="text-3xl font-semibold">Admin dashboard</h1>
-      <p className="text-muted-foreground">
-        Protect this route before production (e.g., Vercel password protection or env-based check).
-      </p>
-      <p className="text-sm text-muted-foreground">
-        Links: /admin/supporters and /admin/petitions
-      </p>
+    <div className="mx-auto max-w-7xl space-y-6 px-4 py-10">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-semibold">Admin Dashboard</h1>
+          <p className="text-muted-foreground mt-1">
+            Manage supporters and petition signatures
+          </p>
+        </div>
+      </div>
+
+      <AdminDashboard
+        supporters={supporters}
+        petitionSignatures={petitionSignatures}
+        petitionEnabled={flags.petitionEnabled}
+      />
     </div>
-  );
+  )
 }

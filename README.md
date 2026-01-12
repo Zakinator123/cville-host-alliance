@@ -8,7 +8,7 @@
 - Resend for transactional email; Cloudflare Turnstile for spam protection
 
 ## App Structure (key routes)
-- `app/(public)/` – public site: home, about, platform, evidence (list/detail), news (list/detail), action center, FAQ, petition (flagged), unsubscribe
+- `app/(public)/` – public site: home (with action alerts, platform, evidence, FAQ preview), about (includes FAQ), news (list/detail), petition (flagged), unsubscribe
 - `app/admin/` – placeholders for dashboard/supporters/petitions (protect before prod)
 - `app/actions/` – server actions for subscribe, petition, unsubscribe, CSV export
 - `app/api/revalidate/route.ts` – Sanity revalidation webhook
@@ -29,8 +29,7 @@
 - Clients:
   - Browser: `lib/supabase/client.ts` (`@supabase/ssr` createBrowserClient)
   - Server (cookies): `lib/supabase/server.ts` (`@supabase/ssr` createServerClient)
-  - Admin (service/secret key): `lib/supabase/admin.ts`
-- CSV export actions use the admin client
+- Admin operations use the server client (protected by password authentication)
 
 ## Forms & Anti-abuse
 - Turnstile verification in `lib/turnstile.ts` (bypasses if `TURNSTILE_SECRET_KEY` unset for local dev)
@@ -45,7 +44,6 @@ Required (public):
 - `NEXT_PUBLIC_PETITION_ENABLED` (true/false)
 
 Required (server):
-- `SUPABASE_SECRET_KEY` (or legacy `SUPABASE_SERVICE_ROLE_KEY`) – needed for admin CSV/export
 - `TURNSTILE_SECRET_KEY`
 - `RESEND_API_KEY`
 - `RESEND_FROM` (sender address)
@@ -59,6 +57,6 @@ Required (server):
 - Dev server: `pnpm dev`
 
 ## Notes
-- Protect `app/admin/*` before production (password/middleware or Vercel protection).
+- Admin dashboard is password-protected via `ADMIN_PASSWORD` env var (set in production).
 - Petition page 404s unless `NEXT_PUBLIC_PETITION_ENABLED=true`.
-- Keep `SUPABASE_SECRET_KEY` server-only; publishable key is safe for client.
+- Admin operations require RLS policies that allow reads (supporters table already has "Allow anonymous select" policy).
