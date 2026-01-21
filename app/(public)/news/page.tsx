@@ -7,10 +7,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getAllPosts } from "@/lib/sanity/queries";
+import { getAllPosts } from "@/lib/content";
 
 export default async function NewsPage() {
-  const posts = await getAllPosts();
+  const posts = getAllPosts();
 
   return (
     <div className="space-y-6">

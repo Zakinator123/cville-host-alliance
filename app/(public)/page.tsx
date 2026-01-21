@@ -3,7 +3,8 @@ import Link from "next/link";
 import { getPetitionCount } from "@/app/actions/petition";
 import { ActionAlertCard } from "@/components/ActionAlertCard";
 import { EmailSignup } from "@/components/forms/EmailSignup";
-import { RichText } from "@/components/sanity/RichText";
+import { RichText } from "@/components/RichText";
+import { ScrollToPlatformButton } from "@/components/ScrollToPlatformButton";
 import { Button } from "@/components/ui/button";
 import {
   Accordion,
@@ -20,27 +21,24 @@ import {
 } from "@/components/ui/card";
 import { flags } from "@/lib/flags";
 import {
-  getAllPosts,
   getEvidenceItems,
   getSiteSettings,
   getActiveActions,
   getFAQs,
   getPageBySlug,
-} from "@/lib/sanity/queries";
+} from "@/lib/content";
 
 export default async function HomePage() {
-  const [siteSettings, posts, evidence, actions, faqs, platformPage, petitionCount] = await Promise.all([
+  const [siteSettings, evidence, actions, faqs, platformPage, petitionCount] = [
     getSiteSettings(),
-    getAllPosts(),
     getEvidenceItems(),
     getActiveActions(),
     getFAQs(),
     getPageBySlug("platform"),
-    getPetitionCount(),
-  ]);
+    await getPetitionCount(),
+  ];
 
   const hero = siteSettings?.heroContent;
-  type Post = Awaited<ReturnType<typeof getAllPosts>>[number];
   type EvidenceItem = Awaited<ReturnType<typeof getEvidenceItems>>[number];
   type ActionAlert = Awaited<ReturnType<typeof getActiveActions>>[number];
   type FAQ = Awaited<ReturnType<typeof getFAQs>>[number];
@@ -90,20 +88,7 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-20">
-      <section
-        className="relative overflow-hidden rounded-3xl border border-primary/15 shadow-elevated"
-        style={{
-          background:
-            "radial-gradient(circle at 16% 12%, color-mix(in oklab, var(--accent-teal) 45%, white) 0%, transparent 42%), radial-gradient(circle at 86% 8%, color-mix(in oklab, var(--accent-coral) 38%, white) 0%, transparent 36%), linear-gradient(135deg, color-mix(in oklab, var(--surface-tinted) 70%, white) 0%, color-mix(in oklab, var(--primary-lighter) 35%, white) 45%, white 100%)",
-        }}
-      >
-        <div
-          className="pointer-events-none absolute inset-0 opacity-70"
-          style={{
-            background:
-              "linear-gradient(120deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 45%), radial-gradient(circle at 20% 80%, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 55%)",
-          }}
-        />
+      <section className="relative overflow-hidden rounded-3xl border border-primary/15 bg-card shadow-elevated">
         <div className="relative grid gap-10 p-8 lg:grid-cols-[1.2fr_0.8fr] lg:p-12">
           <div className="space-y-6">
             <div className="space-y-3">
@@ -119,37 +104,12 @@ export default async function HomePage() {
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
-              <Button asChild size="lg">
-                <Link href="#take-action">Join the petition</Link>
-              </Button>
-              <Button asChild size="lg" variant="outline">
-                <Link href="/about">Read our platform</Link>
-              </Button>
+              <ScrollToPlatformButton />
             </div>
           </div>
           <div className="relative">
-            <div
-              className="pointer-events-none absolute -inset-10 rounded-[40px] opacity-100 blur-3xl"
-              style={{
-                background:
-                  "radial-gradient(circle at 18% 12%, rgba(255,111,97,0.7) 0%, transparent 50%), radial-gradient(circle at 85% 8%, rgba(80,200,200,0.75) 0%, transparent 45%), radial-gradient(circle at 50% 92%, rgba(70,110,255,0.55) 0%, transparent 55%)",
-              }}
-            />
-            <div
-              className="pointer-events-none absolute -inset-4 rounded-[36px] opacity-90 blur-xl"
-              style={{
-                background:
-                  "conic-gradient(from 210deg, rgba(255,255,255,0.75), rgba(255,255,255,0), rgba(255,255,255,0.6))",
-              }}
-            />
-            <div
-              className="relative rounded-[30px] p-[2px] shadow-[0_25px_80px_rgba(37,70,120,0.25)]"
-              style={{
-                background:
-                  "linear-gradient(130deg, rgba(255,111,97,0.55) 0%, rgba(255,255,255,0.7) 38%, rgba(80,200,200,0.5) 70%, rgba(120,140,255,0.55) 100%)",
-              }}
-            >
-              <div className="rounded-[26px] bg-white/90 backdrop-blur-sm">
+            <div className="relative rounded-[30px] border border-border bg-card p-2 shadow-lg">
+              <div className="rounded-[26px] bg-card">
                 <EmailSignup />
               </div>
             </div>
@@ -158,12 +118,26 @@ export default async function HomePage() {
         
       </section>
 
+      <section className="-mt-12 mb-6 rounded-2xl border border-primary/15 bg-card p-4 shadow-sm">
+        <p className="text-sm text-muted-foreground">
+          The City of Charlottesville is conducting a study of Homestay and Short-Term Rental regulations.{' '}
+          <Link
+            href="https://charlottesville.org/1935/Homestay-Short-Term-Regulations-Study"
+            target="_blank"
+            rel="noreferrer"
+            className="font-semibold text-primary underline-offset-4 hover:underline"
+          >
+            Learn more about the official study
+          </Link>
+          .
+        </p>
+      </section>
+
       <div className="grid gap-6 lg:grid-cols-2">
         <section
           id="timeline"
-          className="relative space-y-6 overflow-hidden rounded-3xl border border-primary/15 bg-gradient-to-br from-primary/5 via-white to-accent-teal/10 p-6 shadow-sm lg:p-8"
+          className="relative space-y-6 overflow-hidden rounded-3xl border border-primary/15 bg-card p-6 shadow-sm lg:p-8"
         >
-          <div className="pointer-events-none absolute right-0 top-0 h-32 w-32 translate-x-8 -translate-y-8 rounded-full bg-primary/10 blur-2xl" />
           <div className="space-y-2">
             <p className="text-sm font-semibold text-primary">Charlottesville STR Regulations Timeline</p>
           </div>
@@ -172,10 +146,7 @@ export default async function HomePage() {
               Key concern
             </p>
             <p className="mt-2 text-sm text-gray-700">
-              The first public comment opportunity was Dec. 3 - this occurred with short notice and those who are most affected were not notified.
-               No other public comment sessions have
-              been scheduled, and the next steps move to Planning Commission and then City Council.
-              <strong>This is not sufficient for public comment.</strong>
+              Most of the <strong>529 STR operators</strong> weren't notified about the Dec. 3 meeting. Regulations are based on a survey of less than 1.3% of the population. No other public comment sessions are scheduled. <strong>This is not sufficient for public comment.</strong>
             </p>
           </div>
           <div className="relative space-y-6 border-l border-primary/20 pl-6">
@@ -189,18 +160,18 @@ export default async function HomePage() {
                         : "border-primary/40 bg-white"
                     }`}
                   />
-                  <div className="space-y-1">
+                  <div className="space-y-2 opacity-60">
                     <p
                       className={`text-sm font-semibold ${
-                        item.emphasis ? "text-accent-coral" : "text-foreground"
+                        item.emphasis ? "text-accent-coral/70" : "text-muted-foreground"
                       }`}
                     >
                       {item.title}
                     </p>
-                    <p className="text-base font-semibold text-foreground/70 line-through decoration-foreground/30">
+                    <p className="text-base font-semibold text-muted-foreground/60 line-through decoration-muted-foreground/40">
                       {item.subtitle}
                     </p>
-                    <p className="text-sm line-through text-muted-foreground/80">{item.description}</p>
+                    <p className="text-sm line-through text-muted-foreground/50">{item.description}</p>
                   </div>
                 </li>
               ))}
@@ -229,7 +200,7 @@ export default async function HomePage() {
         </section>
         <section
           id="take-action"
-          className="relative space-y-5 overflow-hidden rounded-3xl border border-accent-coral/25 bg-gradient-to-br from-accent-coral/10 via-white to-accent-coral/5 p-6 shadow-sm lg:p-8"
+          className="relative space-y-5 overflow-hidden rounded-3xl border border-accent-coral/25 bg-card p-6 shadow-sm lg:p-8"
         >
           <div className="pointer-events-none absolute left-0 top-0 h-32 w-32 -translate-x-10 -translate-y-10 rounded-full bg-accent-coral/20 blur-2xl" />
           <div>
@@ -255,7 +226,7 @@ export default async function HomePage() {
 
       <section
         id="platform"
-        className="relative space-y-6 overflow-hidden rounded-3xl border border-primary/15 bg-gradient-to-br from-primary/10 via-white to-primary/5 p-6 shadow-sm lg:p-8"
+        className="-mt-[56px] relative space-y-6 overflow-hidden rounded-3xl border border-primary/15 bg-card p-6 shadow-sm lg:p-8 scroll-mt-24"
       >
         <div className="pointer-events-none absolute right-0 top-0 h-32 w-32 translate-x-8 -translate-y-8 rounded-full bg-primary/10 blur-2xl" />
         <div className="border-b border-primary/10 pb-4">
@@ -273,7 +244,7 @@ export default async function HomePage() {
         )}
       </section>
 
-      <section id="evidence" className="space-y-5 rounded-3xl border border-accent-teal/20 bg-gradient-to-br from-accent-teal/5 to-accent-teal/10 p-6 shadow-sm lg:p-8">
+      <section id="evidence" className="-mt-[56px] space-y-5 rounded-3xl border border-primary/20 bg-card p-6 shadow-sm lg:p-8">
         <div>
           <h2 className="text-3xl font-semibold text-foreground">Data</h2>
         </div>
@@ -296,8 +267,8 @@ export default async function HomePage() {
                 </p>
                 {item.stats && item.stats.length > 0 && (
                   <div className="space-y-1.5 rounded-lg bg-accent-teal/5 p-3">
-                    {item.stats.slice(0, 3).map((stat: { _key?: string; label?: string; value?: string }) => (
-                      <div key={stat._key} className="flex items-baseline justify-between gap-2">
+                    {item.stats.slice(0, 3).map((stat, index) => (
+                      <div key={stat.label || index} className="flex items-baseline justify-between gap-2">
                         <span className="text-xs text-muted-foreground">{stat.label}</span>
                         <span className="text-sm font-semibold text-foreground">{stat.value}</span>
                       </div>
@@ -332,56 +303,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="space-y-5 rounded-3xl border border-border/80 bg-section-tint p-6 shadow-sm lg:p-8">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <p className="text-sm font-semibold text-primary">Latest news</p>
-            <h2 className="text-2xl font-semibold text-foreground">Updates from the campaign</h2>
-          </div>
-          <Button asChild variant="ghost" size="sm">
-            <Link href="/news">View all</Link>
-          </Button>
-        </div>
-        <div className="grid gap-4 md:grid-cols-2">
-          {(posts ?? []).slice(0, 3).map((post: Post) => (
-            <Card key={post._id} variant="accent-teal">
-              <CardHeader>
-                <CardTitle className="flex items-start justify-between gap-2">
-                  {post.title}
-                  <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
-                    News
-                  </span>
-                </CardTitle>
-                <CardDescription>
-                  {post.excerpt ?? "Update from the alliance."}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="flex items-center justify-between">
-                <p className="text-sm text-muted-foreground">
-                  {post.publishedAt
-                    ? new Date(post.publishedAt).toLocaleDateString()
-                    : "Draft"}
-                </p>
-                <Button asChild size="sm" variant="outline">
-                  <Link href={`/news/${post.slug}`}>Read</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-          {(posts ?? []).length === 0 && (
-            <Card variant="tinted">
-              <CardHeader>
-                <CardTitle>News coming soon</CardTitle>
-                <CardDescription>
-                  We'll post hearing summaries and action updates here.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          )}
-        </div>
-      </section>
-
-      <section className="space-y-5 rounded-3xl border border-border/80 bg-section-tint p-6 shadow-sm lg:p-8">
+      <section className="-mt-[56px] space-y-5 rounded-3xl border border-border/80 bg-card p-6 shadow-sm lg:p-8">
         <div className="flex items-center justify-between gap-3">
           <div>
             <p className="text-sm font-semibold text-primary">FAQ</p>

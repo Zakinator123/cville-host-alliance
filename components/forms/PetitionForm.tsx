@@ -127,9 +127,6 @@ export function PetitionForm({ initialCount, initialName = "", initialEmail = ""
         <div>
           <p className="text-sm font-medium text-primary">Add your name</p>
           <h3 className="text-xl font-semibold">Demand a pause for open feedback</h3>
-          <p className="text-sm text-muted-foreground">
-            Join {count.toLocaleString()} {count === 1 ? 'supporter' : 'supporters'} asking the City to pause STR regulations and allow for open, inclusive input on both the current regulations and proposed new regulations.
-          </p>
         </div>
       </div>
       <Separator className="my-4" />

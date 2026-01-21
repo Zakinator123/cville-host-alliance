@@ -1,19 +1,18 @@
-import { RichText } from "@/components/sanity/RichText";
+import { RichText } from "@/components/RichText";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { getPageBySlug, getFAQs } from "@/lib/sanity/queries";
+import { getPageBySlug, getFAQs } from "@/lib/content";
 import { notFound } from "next/navigation";
-import type { PortableTextBlock } from "@portabletext/react";
 
 export default async function AboutPage() {
-  const [page, faqs] = await Promise.all([
+  const [page, faqs] = [
     getPageBySlug("about"),
     getFAQs(),
-  ]);
+  ];
 
   if (!page) {
     notFound();
@@ -42,11 +41,11 @@ export default async function AboutPage() {
             </p>
           </div>
           <Accordion type="multiple" className="w-full">
-            {faqs.map((item: { _id: string; question: string; answer?: PortableTextBlock[] }) => (
+            {faqs.map((item) => (
               <AccordionItem value={item._id} key={item._id}>
                 <AccordionTrigger className="text-left">{item.question}</AccordionTrigger>
                 <AccordionContent>
-                  {item.answer ? (
+                  {item.answer && item.answer.length > 0 ? (
                     <RichText value={item.answer} />
                   ) : (
                     <p className="text-muted-foreground">Answer coming soon.</p>

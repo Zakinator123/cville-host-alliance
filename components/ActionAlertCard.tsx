@@ -1,8 +1,6 @@
 "use client";
 
-import { PortableTextBlock } from "@portabletext/react";
-
-import { RichText } from "@/components/sanity/RichText";
+import { RichText } from "@/components/RichText";
 import {
   Card,
   CardContent,
@@ -10,7 +8,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { PetitionForm } from "@/components/forms/PetitionForm";
-import { flags } from "@/lib/flags";
 
 type ActionAlertCardProps = {
   item: {
@@ -18,9 +15,9 @@ type ActionAlertCardProps = {
     title: string;
     urgency?: "low" | "medium" | "high";
     deadline?: string;
-    description?: PortableTextBlock[];
-    emailTemplate?: PortableTextBlock[];
-    callScript?: PortableTextBlock[];
+    description?: string[];
+    emailTemplate?: string[];
+    callScript?: string[];
   };
   petitionCount?: number;
 };
@@ -39,9 +36,7 @@ export function ActionAlertCard({ item, petitionCount = 0 }: ActionAlertCardProp
           </div>
         )}
 
-        {flags.petitionEnabled && (
-          <PetitionForm initialCount={petitionCount} />
-        )}
+        <PetitionForm initialCount={petitionCount} />
 
         {item.callScript && (
           <div className="rounded-xl border border-border/60 bg-background/60 p-4">

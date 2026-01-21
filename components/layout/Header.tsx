@@ -5,7 +5,6 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-import { flags } from "@/lib/flags";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -19,8 +18,7 @@ import { MobileNav } from "./MobileNav";
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
-  { href: "/news", label: "News" },
-  ...(flags.petitionEnabled ? [{ href: "/petition", label: "Petition" }] : []),
+  { href: "/petition", label: "Petition" },
 ];
 
 function scrollToEmailAndGlow() {

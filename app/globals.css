@@ -67,6 +67,10 @@
   --accent-foreground: oklch(0.98 0.02 166);
   --accent-coral: oklch(0.70 0.15 40);
   --accent-coral-foreground: oklch(0.98 0.02 40);
+  --accent-navy: oklch(0.35 0.15 260);
+  --accent-navy-foreground: oklch(0.98 0.02 260);
+  --accent-yellow: oklch(0.70 0.15 85);
+  --accent-yellow-foreground: oklch(0.25 0.05 85);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.92 0.004 286.32);
   --input: oklch(0.92 0.004 286.32);
@@ -108,6 +112,10 @@
   --accent-foreground: oklch(0.26 0.05 173);
   --accent-coral: oklch(0.74 0.19 40);
   --accent-coral-foreground: oklch(0.21 0.06 25);
+  --accent-navy: oklch(0.40 0.15 260);
+  --accent-navy-foreground: oklch(0.95 0.02 260);
+  --accent-yellow: oklch(0.75 0.15 85);
+  --accent-yellow-foreground: oklch(0.30 0.05 85);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
@@ -132,6 +140,9 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     @apply bg-background text-foreground;
   }
@@ -139,10 +150,7 @@
 
 @layer utilities {
   .bg-hero-gradient {
-    background:
-      radial-gradient(circle at 20% 20%, color-mix(in oklab, var(--primary-lighter) 35%, transparent), transparent 45%),
-      radial-gradient(circle at 80% 10%, color-mix(in oklab, var(--accent-coral) 28%, transparent), transparent 40%),
-      linear-gradient(135deg, var(--primary-lighter) 0%, var(--primary) 50%, var(--primary-dark) 100%);
+    background: var(--card);
   }
 
   .bg-section-tint {
@@ -154,28 +162,28 @@
   }
 
   .card-surface {
-    background: linear-gradient(180deg, color-mix(in oklab, var(--surface-tinted) 70%, transparent) 0%, var(--card) 100%);
+    background: var(--card);
   }
 
   .shadow-elevated {
     box-shadow:
-      0 10px 30px -18px color-mix(in oklab, var(--primary) 35%, transparent),
-      0 14px 48px -24px color-mix(in oklab, var(--accent-coral) 25%, transparent);
+      0 10px 30px -18px color-mix(in oklab, var(--accent-navy) 35%, transparent),
+      0 14px 48px -24px color-mix(in oklab, var(--accent-yellow) 25%, transparent);
   }
 
   @keyframes glow-pulse {
     0%, 100% {
       box-shadow:
-        0 10px 30px -18px color-mix(in oklab, var(--primary) 35%, transparent),
-        0 14px 48px -24px color-mix(in oklab, var(--accent-coral) 25%, transparent),
-        0 0 0 0 color-mix(in oklab, var(--primary) 40%, transparent);
+        0 10px 30px -18px color-mix(in oklab, var(--accent-navy) 35%, transparent),
+        0 14px 48px -24px color-mix(in oklab, var(--accent-yellow) 25%, transparent),
+        0 0 0 0 color-mix(in oklab, var(--accent-navy) 40%, transparent);
     }
     50% {
       box-shadow:
-        0 10px 30px -18px color-mix(in oklab, var(--primary) 35%, transparent),
-        0 14px 48px -24px color-mix(in oklab, var(--accent-coral) 25%, transparent),
-        0 0 0 8px color-mix(in oklab, var(--primary) 20%, transparent),
-        0 0 0 16px color-mix(in oklab, var(--primary) 10%, transparent);
+        0 10px 30px -18px color-mix(in oklab, var(--accent-navy) 35%, transparent),
+        0 14px 48px -24px color-mix(in oklab, var(--accent-yellow) 25%, transparent),
+        0 0 0 8px color-mix(in oklab, var(--accent-navy) 20%, transparent),
+        0 0 0 16px color-mix(in oklab, var(--accent-navy) 10%, transparent);
     }
   }
 

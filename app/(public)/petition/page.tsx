@@ -1,13 +1,7 @@
 import { getPetitionCount } from "@/app/actions/petition";
 import { PetitionForm } from "@/components/forms/PetitionForm";
-import { flags } from "@/lib/flags";
-import { notFound } from "next/navigation";
 
 export default async function PetitionPage() {
-  if (!flags.petitionEnabled) {
-    notFound();
-  }
-
   const count = await getPetitionCount();
 
   return (

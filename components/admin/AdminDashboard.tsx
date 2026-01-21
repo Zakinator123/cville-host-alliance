@@ -104,11 +104,9 @@ export function AdminDashboard({
         <TabsTrigger value="supporters">
           Supporters ({supporters.length})
         </TabsTrigger>
-        {petitionEnabled && (
-          <TabsTrigger value="petitions">
-            Petition Signatures ({petitionSignatures.length})
-          </TabsTrigger>
-        )}
+        <TabsTrigger value="petitions">
+          Petition Signatures ({petitionSignatures.length})
+        </TabsTrigger>
       </TabsList>
 
       <TabsContent value="supporters" className="space-y-4">
@@ -170,8 +168,7 @@ export function AdminDashboard({
         </Card>
       </TabsContent>
 
-      {petitionEnabled && (
-        <TabsContent value="petitions" className="space-y-4">
+      <TabsContent value="petitions" className="space-y-4">
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -227,7 +224,6 @@ export function AdminDashboard({
             </CardContent>
           </Card>
         </TabsContent>
-      )}
     </Tabs>
   )
 }

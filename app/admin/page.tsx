@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation'
 import { checkAdminAuth, getSupporters, getPetitionSignatures } from '@/app/actions/export'
-import { flags } from '@/lib/flags'
 import { AdminDashboard } from '@/components/admin/AdminDashboard'
 
 export default async function AdminPage() {
@@ -8,7 +7,7 @@ export default async function AdminPage() {
 
   const [supporters, petitionSignatures] = await Promise.all([
     getSupporters(),
-    flags.petitionEnabled ? getPetitionSignatures() : Promise.resolve([]),
+    getPetitionSignatures(),
   ])
 
   return (
@@ -25,7 +24,7 @@ export default async function AdminPage() {
       <AdminDashboard
         supporters={supporters}
         petitionSignatures={petitionSignatures}
-        petitionEnabled={flags.petitionEnabled}
+        petitionEnabled={true}
       />
     </div>
   )

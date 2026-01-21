@@ -5,7 +5,6 @@ const footerLinks = [
   { href: "/#take-action", label: "Take Action" },
   { href: "/#platform", label: "Platform" },
   { href: "/#evidence", label: "Evidence" },
-  { href: "/news", label: "News" },
 ];
 
 export function Footer() {

@@ -1,5 +1,5 @@
-import { RichText } from "@/components/sanity/RichText";
-import { getPostBySlug } from "@/lib/sanity/queries";
+import { RichText } from "@/components/RichText";
+import { getPostBySlug } from "@/lib/content";
 import { notFound } from "next/navigation";
 
 export default async function NewsDetailPage({
@@ -8,7 +8,7 @@ export default async function NewsDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = await getPostBySlug(slug);
+  const post = getPostBySlug(slug);
 
   if (!post) {
     notFound();
