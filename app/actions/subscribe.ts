@@ -32,9 +32,9 @@ export async function subscribeEmail(input: {
 
   try {
     await sendWelcomeEmail({ to: email })
-  } catch {
+  } catch (err) {
     // Don't block signup if email fails
-    console.error('Failed to send welcome email')
+    console.error('Failed to send welcome email:', err)
   }
 
   return { ok: true }

@@ -93,7 +93,7 @@ export default async function HomePage() {
           <div className="space-y-6">
             <div className="space-y-3">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent-coral">
-                Charlottesville Host Alliance
+                Cville STR Advocates
               </p>
               <h1 className="text-3xl font-semibold leading-tight sm:text-4xl text-primary">
                 {hero?.headline ?? "Protect fair rules for local hosts and guests"}

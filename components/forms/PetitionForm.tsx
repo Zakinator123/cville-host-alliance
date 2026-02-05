@@ -182,7 +182,7 @@ export function PetitionForm({ initialCount, initialName = "", initialEmail = ""
             onCheckedChange={(checked) => setConsentGiven(Boolean(checked))}
           />
           <Label htmlFor="consent" className="text-sm text-muted-foreground">
-            I consent to the Charlottesville Host Alliance storing my information for this petition.
+            I consent to Cville STR Advocates storing my information for this petition.
           </Label>
         </div>
 

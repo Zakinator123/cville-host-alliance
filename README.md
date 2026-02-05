@@ -1,4 +1,4 @@
-# Charlottesville Host Alliance – Developer Guide
+# Cville STR Advocates – Developer Guide
 
 ## Stack
 - Next.js 16 (App Router, React 19, TypeScript)

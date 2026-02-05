@@ -13,7 +13,7 @@ export function Footer() {
       <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-10 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-lg font-semibold">Charlottesville Host Alliance</p>
+            <p className="text-lg font-semibold">Cville STR Advocates</p>
             <p className="text-sm text-muted-foreground">
               Advocating for fair rules for local hosts and guests.
             </p>
@@ -31,7 +31,7 @@ export function Footer() {
           </nav>
         </div>
         <p className="text-xs text-muted-foreground">
-          © {new Date().getFullYear()} Charlottesville Host Alliance. All rights reserved.
+          © {new Date().getFullYear()} Cville STR Advocates. All rights reserved.
         </p>
       </div>
     </footer>

@@ -22,7 +22,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Charlottesville Host Alliance",
+  title: "Cville STR Advocates",
   description: "Protecting short-term rental hosts in Charlottesville and Albemarle.",
 };
 

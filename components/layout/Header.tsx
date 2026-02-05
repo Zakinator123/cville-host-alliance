@@ -81,15 +81,15 @@ export function Header() {
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-3">
             <Image
-              src="/cville-host-alliance-logo.png"
-              alt="Cville Host Alliance logo"
-              width={64}
-              height={64}
-              className="h-16 w-16 object-contain"
+              src="/cville-str-advocates-logo.png"
+              alt="Cville STR Advocates logo"
+              width={88}
+              height={88}
+              className="h-22 w-22 object-contain"
               priority
             />
             <span className="text-xl font-semibold tracking-tight">
-              Charlottesville Host Alliance
+              Cville STR Advocates
             </span>
           </Link>
           <div className="hidden md:block">

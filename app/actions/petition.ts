@@ -47,9 +47,9 @@ export async function submitPetition(input: {
 
   try {
     await sendPetitionConfirmation({ to: email, name })
-  } catch {
+  } catch (err) {
     // Swallow email errors
-    console.error('Failed to send petition confirmation')
+    console.error('Failed to send petition confirmation:', err)
   }
 
   return { ok: true }
