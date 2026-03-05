@@ -73,15 +73,21 @@ export default async function HomePage() {
 
   const upcomingSteps = [
     {
-      title: "Next (Date TBD)",
-      subtitle: "Planning Commission",
-      description: "Regulatory updates move to Planning Commission review.",
+      title: "March 24, 2026",
+      subtitle: "Planning Commission Work Session",
+      description: "Staff will present findings and receive additional feedback.",
       status: "upcoming",
     },
     {
-      title: "After that (Date TBD)",
-      subtitle: "City Council",
-      description: "Final consideration by City Council.",
+      title: "Early May 2026 (tentatively May 4)",
+      subtitle: "City Council Work Session",
+      description: "Incorporating Planning Commission input and discussing updated materials.",
+      status: "upcoming",
+    },
+    {
+      title: "Spring through Summer 2026",
+      subtitle: "Planning Commission & City Council Public Hearings",
+      description: "Anticipated public hearings for any proposed ordinance changes.",
       status: "upcoming",
     },
   ];
@@ -146,7 +152,7 @@ export default async function HomePage() {
               Key concern
             </p>
             <p className="mt-2 text-sm text-gray-700">
-              Most of the <strong>529 STR operators</strong> weren't notified about the Dec. 3 meeting. Regulations are based on a survey of less than 1.3% of the population. No other public comment sessions are scheduled. <strong>This is not sufficient for public comment.</strong>
+              Most of the <strong>529 STR operators</strong> weren't notified about the Dec. 3 meeting, and regulations are based on a survey of less than 1.3% of the population. Upcoming work sessions and hearings are listed below—<strong>your voice still matters.</strong>
             </p>
           </div>
           <div className="relative space-y-6 border-l border-primary/20 pl-6">
