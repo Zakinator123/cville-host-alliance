@@ -18,7 +18,6 @@ import { MobileNav } from "./MobileNav";
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
-  { href: "/petition", label: "Petition" },
 ];
 
 function scrollToEmailAndGlow() {

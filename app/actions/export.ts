@@ -78,22 +78,6 @@ export async function getSupporters() {
   return data || []
 }
 
-export async function getPetitionSignatures() {
-  await checkAdminAuth()
-  
-  const supabase = await getSupabaseServerClient()
-  const { data, error } = await supabase
-    .from('petition_signatures')
-    .select('*')
-    .order('created_at', { ascending: false })
-
-  if (error) {
-    throw new Error('Unable to fetch petition signatures')
-  }
-
-  return data || []
-}
-
 export async function exportSupportersCsv() {
   await checkAdminAuth()
   
@@ -107,15 +91,3 @@ export async function exportSupportersCsv() {
   return toCsv(data as Record<string, unknown>[])
 }
 
-export async function exportPetitionsCsv() {
-  await checkAdminAuth()
-  
-  const supabase = await getSupabaseServerClient()
-  const { data, error } = await supabase.from('petition_signatures').select('*')
-
-  if (error || !data) {
-    throw new Error('Unable to export petition signatures')
-  }
-
-  return toCsv(data as Record<string, unknown>[])
-}

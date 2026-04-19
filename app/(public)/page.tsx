@@ -1,17 +1,8 @@
 import Link from "next/link";
 
-import { getPetitionCount } from "@/app/actions/petition";
-import { ActionAlertCard } from "@/components/ActionAlertCard";
 import { EmailSignup } from "@/components/forms/EmailSignup";
 import { RichText } from "@/components/RichText";
 import { ScrollToPlatformButton } from "@/components/ScrollToPlatformButton";
-import { Button } from "@/components/ui/button";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import {
   Card,
   CardContent,
@@ -19,29 +10,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { flags } from "@/lib/flags";
 import {
   getEvidenceItems,
   getSiteSettings,
-  getActiveActions,
-  getFAQs,
   getPageBySlug,
 } from "@/lib/content";
 
 export default async function HomePage() {
-  const [siteSettings, evidence, actions, faqs, platformPage, petitionCount] = [
+  const [siteSettings, evidence, platformPage] = [
     getSiteSettings(),
     getEvidenceItems(),
-    getActiveActions(),
-    getFAQs(),
     getPageBySlug("platform"),
-    await getPetitionCount(),
   ];
 
   const hero = siteSettings?.heroContent;
   type EvidenceItem = Awaited<ReturnType<typeof getEvidenceItems>>[number];
-  type ActionAlert = Awaited<ReturnType<typeof getActiveActions>>[number];
-  type FAQ = Awaited<ReturnType<typeof getFAQs>>[number];
 
   const timelineItems = [
     {
@@ -69,25 +52,29 @@ export default async function HomePage() {
       emphasis: true,
       status: "past",
     },
+    {
+      title: "March 24, 2026",
+      subtitle: "Planning Commission Work Session",
+      description:
+        "NDS staff recommended NO amendments to the homestay ordinance at this time, focusing instead on stronger monitoring, permitting, and education. Proposed changes — including the $500 permit, mandatory pre-permit inspection, and affidavit requirement — are off the table for now. The Planning Commission was generally supportive.",
+      emphasis: true,
+      status: "past",
+    },
   ];
 
   const upcomingSteps = [
     {
-      title: "March 24, 2026",
-      subtitle: "Planning Commission Work Session",
-      description: "Staff will present findings and receive additional feedback.",
-      status: "upcoming",
-    },
-    {
-      title: "Early May 2026 (tentatively May 4)",
+      title: "Early May 2026 (tentatively)",
       subtitle: "City Council Work Session",
-      description: "Incorporating Planning Commission input and discussing updated materials.",
+      description:
+        "Council deliberation incorporating Planning Commission input and updated materials. Written comments to Council ahead of the session can still carry weight.",
       status: "upcoming",
     },
     {
       title: "Spring through Summer 2026",
       subtitle: "Planning Commission & City Council Public Hearings",
-      description: "Anticipated public hearings for any proposed ordinance changes.",
+      description:
+        "Anticipated public hearings for any proposed ordinance changes. Specific dates have not yet been published; we'll send them out the moment they are.",
       status: "upcoming",
     },
   ];
@@ -139,96 +126,69 @@ export default async function HomePage() {
         </p>
       </section>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <section
-          id="timeline"
-          className="relative space-y-6 overflow-hidden rounded-3xl border border-primary/15 bg-card p-6 shadow-sm lg:p-8"
-        >
-          <div className="space-y-2">
-            <p className="text-sm font-semibold text-primary">Charlottesville STR Regulations Timeline</p>
-          </div>
-          <div className="rounded-2xl border-2 border-accent-coral bg-red-100 p-4 shadow-lg">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-black">
-              Key concern
-            </p>
-            <p className="mt-2 text-sm text-gray-700">
-              Most of the <strong>529 STR operators</strong> weren't notified about the Dec. 3 meeting, and regulations are based on a survey of less than 1.3% of the population. Upcoming work sessions and hearings are listed below—<strong>your voice still matters.</strong>
-            </p>
-          </div>
-          <div className="relative space-y-6 border-l border-primary/20 pl-6">
-            <ol className="space-y-6">
-              {timelineItems.map((item) => (
-                <li key={item.title} className="relative">
-                  <span
-                    className={`absolute -left-[30px] top-1.5 h-3 w-3 rounded-full border-2 ${
-                      item.emphasis
-                        ? "border-accent-coral bg-accent-coral/20"
-                        : "border-primary/40 bg-white"
+      <section
+        id="timeline"
+        className="relative space-y-6 overflow-hidden rounded-3xl border border-primary/15 bg-card p-6 shadow-sm lg:p-8"
+      >
+        <div className="space-y-2">
+          <p className="text-sm font-semibold text-primary">Charlottesville STR Regulations Timeline</p>
+        </div>
+        <div className="rounded-2xl border-2 border-accent-coral bg-red-100 p-4 shadow-lg">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-black">
+            Latest update
+          </p>
+          <p className="mt-2 text-sm text-gray-700">
+            On <strong>March 24, 2026</strong>, NDS recommended <strong>no amendments</strong> to the homestay ordinance — the $500 permit, mandatory inspections, and affidavit requirement are all off the table for now. Council discusses staff&apos;s recommendation at a work session tentatively in early May, and public hearings on any ordinance changes are anticipated through summer 2026 — dates haven&apos;t been published yet. Sign up below and we&apos;ll send them when they are. Going forward, we&apos;re focused on heading off new restrictions <em>and</em> pushing to improve parts of the current code where it could work better for residents.
+          </p>
+        </div>
+        <div className="relative space-y-6 border-l border-primary/20 pl-6">
+          <ol className="space-y-6">
+            {timelineItems.map((item) => (
+              <li key={item.title} className="relative">
+                <span
+                  className={`absolute -left-[30px] top-1.5 h-3 w-3 rounded-full border-2 ${
+                    item.emphasis
+                      ? "border-accent-coral bg-accent-coral/20"
+                      : "border-primary/40 bg-white"
+                  }`}
+                />
+                <div className="space-y-2 opacity-60">
+                  <p
+                    className={`text-sm font-semibold ${
+                      item.emphasis ? "text-accent-coral/70" : "text-muted-foreground"
                     }`}
-                  />
-                  <div className="space-y-2 opacity-60">
-                    <p
-                      className={`text-sm font-semibold ${
-                        item.emphasis ? "text-accent-coral/70" : "text-muted-foreground"
-                      }`}
-                    >
-                      {item.title}
-                    </p>
-                    <p className="text-base font-semibold text-muted-foreground/60 line-through decoration-muted-foreground/40">
-                      {item.subtitle}
-                    </p>
-                    <p className="text-sm line-through text-muted-foreground/50">{item.description}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-            <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-                What is scheduled next
-              </p>
-
-            </div>
-            <ol className="space-y-4">
-              {upcomingSteps.map((item: { title: string; subtitle: string; description: string; status: string }) => (
-                <li key={item.subtitle} className="relative">
-                  <span className="absolute -left-[30px] top-1.5 h-3 w-3 rounded-full bg-primary/40" />
-                  <div className="space-y-1">
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-                      {item.title}
-                    </p>
-                    <p className="text-lg font-semibold text-foreground">{item.subtitle}</p>
-                    <p className="text-sm text-foreground/80">{item.description}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </section>
-        <section
-          id="take-action"
-          className="relative space-y-5 overflow-hidden rounded-3xl border border-accent-coral/25 bg-card p-6 shadow-sm lg:p-8"
-        >
-          <div className="pointer-events-none absolute left-0 top-0 h-32 w-32 -translate-x-10 -translate-y-10 rounded-full bg-accent-coral/20 blur-2xl" />
-          <div>
-            <h2 className="text-3xl font-semibold text-foreground">Petition City Council</h2>
-          </div>
-          <div className="grid gap-4">
-            {(actions ?? []).map((item: ActionAlert) => (
-              <ActionAlertCard key={item._id} item={item} petitionCount={petitionCount} />
+                  >
+                    {item.title}
+                  </p>
+                  <p className="text-base font-semibold text-muted-foreground/60 line-through decoration-muted-foreground/40">
+                    {item.subtitle}
+                  </p>
+                  <p className="text-sm line-through text-muted-foreground/50">{item.description}</p>
+                </div>
+              </li>
             ))}
-            {(actions ?? []).length === 0 && (
-              <Card variant="tinted">
-                <CardHeader>
-                  <CardTitle>No active actions right now</CardTitle>
-                  <CardDescription>
-                    Check back soon for upcoming votes, hearings, and calls to action.
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            )}
+          </ol>
+          <div className="space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+              What is scheduled next
+            </p>
           </div>
-        </section>
-      </div>
+          <ol className="space-y-4">
+            {upcomingSteps.map((item: { title: string; subtitle: string; description: string; status: string }) => (
+              <li key={item.subtitle} className="relative">
+                <span className="absolute -left-[30px] top-1.5 h-3 w-3 rounded-full bg-primary/40" />
+                <div className="space-y-1">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+                    {item.title}
+                  </p>
+                  <p className="text-lg font-semibold text-foreground">{item.subtitle}</p>
+                  <p className="text-sm text-foreground/80">{item.description}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
 
       <section
         id="platform"
@@ -309,41 +269,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="-mt-[56px] space-y-5 rounded-3xl border border-border/80 bg-card p-6 shadow-sm lg:p-8">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <p className="text-sm font-semibold text-primary">FAQ</p>
-            <h2 className="text-2xl font-semibold text-foreground">Common questions</h2>
-          </div>
-          <Button asChild variant="ghost" size="sm">
-            <Link href="/about#faq">View all</Link>
-          </Button>
-        </div>
-        <Accordion type="multiple" className="w-full">
-          {(faqs ?? []).slice(0, 3).map((item: FAQ) => (
-            <AccordionItem value={item._id} key={item._id}>
-              <AccordionTrigger className="text-left">{item.question}</AccordionTrigger>
-              <AccordionContent>
-                {item.answer ? (
-                  <RichText value={item.answer} />
-                ) : (
-                  <p className="text-muted-foreground">Answer coming soon.</p>
-                )}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-          {(faqs ?? []).length === 0 && (
-            <AccordionItem value="empty">
-              <AccordionTrigger>No questions yet</AccordionTrigger>
-              <AccordionContent>
-                <p className="text-muted-foreground">
-                  We'll publish common questions and answers here soon.
-                </p>
-              </AccordionContent>
-            </AccordionItem>
-          )}
-        </Accordion>
-      </section>
     </div>
   );
 }

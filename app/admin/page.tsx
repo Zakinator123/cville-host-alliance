@@ -1,14 +1,10 @@
-import { redirect } from 'next/navigation'
-import { checkAdminAuth, getSupporters, getPetitionSignatures } from '@/app/actions/export'
+import { checkAdminAuth, getSupporters } from '@/app/actions/export'
 import { AdminDashboard } from '@/components/admin/AdminDashboard'
 
 export default async function AdminPage() {
   await checkAdminAuth()
 
-  const [supporters, petitionSignatures] = await Promise.all([
-    getSupporters(),
-    getPetitionSignatures(),
-  ])
+  const supporters = await getSupporters()
 
   return (
     <div className="mx-auto max-w-7xl space-y-6 px-4 py-10">
@@ -16,16 +12,12 @@ export default async function AdminPage() {
         <div>
           <h1 className="text-3xl font-semibold">Admin Dashboard</h1>
           <p className="text-muted-foreground mt-1">
-            Manage supporters and petition signatures
+            Manage supporter signups
           </p>
         </div>
       </div>
 
-      <AdminDashboard
-        supporters={supporters}
-        petitionSignatures={petitionSignatures}
-        petitionEnabled={true}
-      />
+      <AdminDashboard supporters={supporters} />
     </div>
   )
 }

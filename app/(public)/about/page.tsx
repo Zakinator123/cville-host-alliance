@@ -1,18 +1,9 @@
 import { RichText } from "@/components/RichText";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { getPageBySlug, getFAQs } from "@/lib/content";
+import { getPageBySlug } from "@/lib/content";
 import { notFound } from "next/navigation";
 
 export default async function AboutPage() {
-  const [page, faqs] = [
-    getPageBySlug("about"),
-    getFAQs(),
-  ];
+  const page = getPageBySlug("about");
 
   if (!page) {
     notFound();
@@ -30,32 +21,6 @@ export default async function AboutPage() {
           <p className="text-muted-foreground">Content coming soon.</p>
         )}
       </div>
-
-      {faqs && faqs.length > 0 && (
-        <div id="faq" className="space-y-6 border-t pt-12">
-          <div>
-            <p className="text-sm font-medium text-primary">FAQ</p>
-            <h2 className="text-2xl font-semibold">Common questions</h2>
-            <p className="text-muted-foreground">
-              Learn more about our organization and the issues we're addressing.
-            </p>
-          </div>
-          <Accordion type="multiple" className="w-full">
-            {faqs.map((item) => (
-              <AccordionItem value={item._id} key={item._id}>
-                <AccordionTrigger className="text-left">{item.question}</AccordionTrigger>
-                <AccordionContent>
-                  {item.answer && item.answer.length > 0 ? (
-                    <RichText value={item.answer} />
-                  ) : (
-                    <p className="text-muted-foreground">Answer coming soon.</p>
-                  )}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
-      )}
     </div>
   );
 }

@@ -36,12 +36,6 @@ export function EmailSignup({ onSignupComplete }: EmailSignupProps) {
         return;
       }
 
-      // Store email in sessionStorage for petition autopopulation
-      if (typeof window !== "undefined") {
-        sessionStorage.setItem("petition_email", email);
-        // Dispatch custom event to notify petition form
-        window.dispatchEvent(new CustomEvent("petitionDataUpdated"));
-      }
       setConfirmationMessage("Thanks! You're signed up for updates.");
       setStage("step2");
     });
@@ -67,15 +61,6 @@ export function EmailSignup({ onSignupComplete }: EmailSignupProps) {
         return;
       }
 
-      // Store email/name in sessionStorage for petition autopopulation
-      if (typeof window !== "undefined") {
-        sessionStorage.setItem("petition_email", email);
-        if (name) {
-          sessionStorage.setItem("petition_name", name);
-        }
-        // Dispatch custom event to notify petition form
-        window.dispatchEvent(new CustomEvent("petitionDataUpdated"));
-      }
       setConfirmationMessage("Name saved! Thanks for joining.");
       setTimeout(() => {
         setConfirmationMessage(null);
@@ -85,35 +70,13 @@ export function EmailSignup({ onSignupComplete }: EmailSignupProps) {
     });
   };
 
-  const scrollToPetition = () => {
-    // Try to find petition form in ActionAlertCard first
-    const petitionForm = document.getElementById("petition-form");
-    if (petitionForm) {
-      petitionForm.scrollIntoView({ behavior: "smooth", block: "center" });
-      // Trigger pulsate effect
-      petitionForm.classList.add("email-signup-glow");
-      setTimeout(() => {
-        petitionForm.classList.remove("email-signup-glow");
-      }, 3000);
-    } else {
-      // Fallback: scroll to take-action section
-      const takeAction = document.getElementById("take-action");
-      if (takeAction) {
-        takeAction.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }
-  };
-
   if (stage === "done") {
     return (
       <div className="rounded-3xl border border-primary/15 bg-section-tint p-6 shadow-elevated">
-        <h3 className="text-xl font-semibold text-foreground">Thank you for joining!</h3>
-        <p className="text-muted-foreground mb-4">
-          You're on the list. We'll keep you posted on key hearings and action alerts.
+        <h3 className="text-xl font-semibold text-foreground">You&apos;re on the list</h3>
+        <p className="text-muted-foreground">
+          We&apos;ll be in touch when meetings come up and the occasional time we need a few hosts to weigh in.
         </p>
-        <Button onClick={scrollToPetition} className="w-full">
-          Sign the petition too
-        </Button>
       </div>
     );
   }
@@ -125,9 +88,9 @@ export function EmailSignup({ onSignupComplete }: EmailSignupProps) {
     >
       <div className="mb-4 flex items-center justify-between gap-3 px-6 pt-6">
         <div className="space-y-1">
-          <h3 className="text-xl font-semibold">Get updates</h3>
+          <h3 className="text-xl font-semibold">Stay in the loop</h3>
           <p className="text-sm text-muted-foreground">
-            Get updates on hearings, votes, and ways to help.
+            We&apos;ll send a heads-up when meetings matter and the occasional ask between them.
           </p>
         </div>
       </div>
@@ -192,15 +155,6 @@ export function EmailSignup({ onSignupComplete }: EmailSignupProps) {
                 type="button"
                 variant="ghost"
                 onClick={() => {
-                  // Store email in sessionStorage for petition autopopulation
-                  if (typeof window !== "undefined") {
-                    sessionStorage.setItem("petition_email", email);
-                    if (name) {
-                      sessionStorage.setItem("petition_name", name);
-                    }
-                    // Dispatch custom event to notify petition form
-                    window.dispatchEvent(new CustomEvent("petitionDataUpdated"));
-                  }
                   setStage("done");
                   onSignupComplete?.(email, name);
                 }}
